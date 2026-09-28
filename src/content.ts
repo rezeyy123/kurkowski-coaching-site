@@ -149,7 +149,7 @@ export const content = {
         },
         nachher: {
           pfad: "/images/nachher.jpg",
-          alt: "Nachher-Foto von Piotr Kurkowski nach 1,5 Jahren Transformation",
+          alt: "Nachher-Foto von Piotr Kurkowski nach seiner 1,5-jaehrigen Transformation",
           platzhalter: true,
         },
       },
