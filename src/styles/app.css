@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Kurkowski Coaching — Grund-Design
+   Dunkles Sport-Design mit Orange als Akzentfarbe (siehe --kk-accent).
+   Diese Datei steuert Farben, Schrift und Abstände. Texte ändert man in
+   src/content.ts, nicht hier.
+   ========================================================================== */
+
+@theme {
+  /* Akzentfarbe (Orange). Wer eine andere Akzentfarbe will, ändert hier den
+     Hex-Wert. Achtung: helle Akzente brauchen dunkle Schrift darauf. */
+  --color-accent: #f97316;
+  --color-accent-dark: #ea580c;
+
+  /* Dunkle Flächen */
+  --color-ink-950: #08090d;
+  --color-ink-900: #0d0f14;
+  --color-ink-850: #12141b;
+  --color-ink-800: #191c25;
+  --color-ink-700: #262a35;
+
+  /* Schriftfarben (alle kontrastreich genug auf dunklem Grund) */
+  --color-fg: #f5f6f8;
+  --color-fg-muted: #a8adba;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-ink-950);
+    color: var(--color-fg);
+    -webkit-font-smoothing: antialiased;
+    /* Verhindert seitliches Scrollen durch einzelne breite Elemente. */
+    overflow-x: hidden;
+  }
+
+  /* Sichtbarer Fokusring für Tastatur-Nutzer:innen. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+}
+
+@layer components {
+  /* Einheitliche Buttons (immer <a> oder <button>, nie <div>). */
+  .kk-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.875rem;
+    padding: 0.95rem 1.4rem;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.2;
+    text-align: center;
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease,
+      transform 150ms ease;
+    min-height: 52px; /* bequem mit dem Daumen tippbar */
+  }
+
+  .kk-btn-primaer {
+    background-color: var(--color-accent);
+    color: #0a0a0a; /* dunkle Schrift: deutlich besserer Kontrast als weiß */
+  }
+  .kk-btn-primaer:hover {
+    background-color: var(--color-accent-dark);
+  }
+
+  .kk-btn-sekundaer {
+    background-color: transparent;
+    color: var(--color-fg);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+  }
+  .kk-btn-sekundaer:hover {
+    border-color: var(--color-accent);
+    background-color: rgba(249, 115, 22, 0.12);
+  }
+
+  .kk-btn-deaktiviert {
+    background-color: var(--color-ink-800);
+    color: var(--color-fg-muted);
+    border: 1px dashed rgba(255, 255, 255, 0.25);
+    cursor: not-allowed;
+  }
+
+  /* Karte / Panel */
+  .kk-card {
+    background-color: var(--color-ink-850);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.25rem;
+  }
+
+  /* Kleine Überschrift über Abschnitten */
+  .kk-eyebrow {
+    color: var(--color-accent);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+  }
+
+  /* FAQ-Akkordeon: <details>/<summary> — funktioniert ohne JavaScript. */
+  .kk-details > summary {
+    cursor: pointer;
+    list-style: none;
+  }
+  .kk-details > summary::-webkit-details-marker {
+    display: none;
+  }
+  .kk-details > summary::marker {
+    content: "";
+  }
+  .kk-details[open] > summary .kk-chevron {
+    transform: rotate(180deg);
+  }
+}
+
+/* Nutzer:innen mit "Bewegung reduzieren" bekommen keine Animationen. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
