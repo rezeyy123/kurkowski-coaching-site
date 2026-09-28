@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 
 import { Foto } from "~/components/Foto";
 import { content, istPlatzhalterLink } from "~/content";
@@ -58,6 +59,70 @@ function Abschnitt({
         {children}
       </div>
     </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Adresse zum Kopieren
+// ---------------------------------------------------------------------------
+// Ein mailto-Link tut auf Geräten ohne eingerichtetes E-Mail-Programm nichts.
+// Deshalb steht die Adresse zusätzlich als echter Text im HTML: markieren und
+// kopieren funktioniert damit auf jedem Gerät, auch ganz ohne JavaScript.
+// Der kleine "Kopieren"-Knopf ist nur eine Erleichterung obendrauf — er
+// erscheint erst, wenn JavaScript läuft (deshalb kein Hydration-Fehler).
+
+function AdresseKopieren({
+  adresse,
+  hinweis,
+  knopfText,
+  erfolgText,
+  fehlerText,
+}: {
+  adresse: string;
+  hinweis?: string;
+  knopfText?: string;
+  erfolgText?: string;
+  fehlerText?: string;
+}) {
+  const [knopfBereit, setKnopfBereit] = useState(false);
+  const [meldung, setMeldung] = useState<"ruhe" | "ok" | "fehler">("ruhe");
+
+  useEffect(() => {
+    setKnopfBereit(typeof navigator !== "undefined" && Boolean(navigator.clipboard));
+  }, []);
+
+  async function kopieren() {
+    try {
+      await navigator.clipboard.writeText(adresse);
+      setMeldung("ok");
+    } catch {
+      setMeldung("fehler");
+    }
+    window.setTimeout(() => setMeldung("ruhe"), 4000);
+  }
+
+  return (
+    <div className="mt-4 border-t border-white/10 pt-4">
+      <p className="text-xs leading-relaxed font-semibold text-fg-muted">
+        {hinweis ?? "Oder direkt kopieren:"}{" "}
+        {/* Echter Text (kein Bild, kein CSS-Inhalt), absichtlich kein Link. */}
+        <span className="font-bold break-all text-fg select-all">{adresse}</span>
+      </p>
+
+      {knopfBereit && knopfText ? (
+        <button
+          type="button"
+          onClick={kopieren}
+          className="mt-2.5 inline-flex min-h-9 items-center rounded-lg border border-white/25 px-3 py-1.5 text-xs font-bold text-fg transition-colors hover:border-accent hover:bg-accent/10"
+        >
+          {meldung === "ok" ? (erfolgText ?? "Kopiert") : knopfText}
+        </button>
+      ) : null}
+
+      <p role="status" className="mt-2 text-xs leading-relaxed text-accent">
+        {meldung === "fehler" ? (fehlerText ?? "") : ""}
+      </p>
+    </div>
   );
 }
 
@@ -329,6 +394,18 @@ function Startseite() {
                       {k.buttonText}
                     </a>
                   )}
+
+                  {/* Adresse als normaler Text unter dem Button — für alle,
+                      deren Gerät kein E-Mail-Programm eingerichtet hat. */}
+                  {k.adresse ? (
+                    <AdresseKopieren
+                      adresse={k.adresse}
+                      hinweis={k.adresseHinweis}
+                      knopfText={k.kopierButtonText}
+                      erfolgText={k.kopiertText}
+                      fehlerText={k.kopierFehlerText}
+                    />
+                  ) : null}
                 </article>
               );
             })}

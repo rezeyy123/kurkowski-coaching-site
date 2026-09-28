@@ -69,6 +69,30 @@ export type Transformation = {
   nachher: Bild;
 };
 
+/**
+ * Ein Kontaktweg im Abschnitt "Deine Anfrage".
+ * Die Felder ab "adresse" sind optional und sorgen dafür, dass die Adresse
+ * zusätzlich als normaler, kopierbarer Text unter dem Button steht.
+ */
+export type KontaktKanal = {
+  id: string;
+  name: string;
+  beschreibung: string;
+  link: string;
+  buttonText: string;
+  stil: "primaer" | "sekundaer";
+  /** Optional: Adresse, die unter dem Button als Text zum Kopieren steht. */
+  adresse?: string;
+  /** Optional: Zeile vor der Adresse, z. B. "Oder direkt kopieren:". */
+  adresseHinweis?: string;
+  /** Optional: Beschriftung des kleinen Kopieren-Knopfes. */
+  kopierButtonText?: string;
+  /** Optional: sichtbare Bestätigung nach dem Kopieren. */
+  kopiertText?: string;
+  /** Optional: Hinweis, falls das Kopieren technisch nicht geht. */
+  kopierFehlerText?: string;
+};
+
 // ---------------------------------------------------------------------------
 // 2. ALLE INHALTE DER SEITE
 // ---------------------------------------------------------------------------
@@ -292,13 +316,22 @@ export const content = {
       {
         id: "email",
         name: "E-Mail",
+        // Wichtig: Der Button unten öffnet das E-Mail-Programm auf dem Gerät.
+        // Wer keins eingerichtet hat, findet darunter die Adresse als Text zum
+        // Kopieren — deshalb steht sie hier zusätzlich in "adresse".
         beschreibung:
-          "Du möchtest lieber eine E-Mail schreiben? Dann nutze diesen Link — er öffnet dein E-Mail-Programm mit meiner Adresse (piotr.coaches@gmail.com).",
+          "Du möchtest lieber eine E-Mail schreiben? Der Button öffnet das E-Mail-Programm auf deinem Gerät. Wenn dort kein E-Mail-Programm eingerichtet ist, tut sich nichts — dann kopiere einfach die Adresse darunter.",
         link: "mailto:piotr.coaches@gmail.com?subject=Anfrage%20Coaching",
         buttonText: "E-Mail schreiben",
         stil: "sekundaer" as const,
+        /** Wird unter dem Button als markierbarer Text angezeigt. */
+        adresse: "piotr.coaches@gmail.com",
+        adresseHinweis: "Oder direkt kopieren:",
+        kopierButtonText: "Kopieren",
+        kopiertText: "Adresse kopiert",
+        kopierFehlerText: "Kopieren ging nicht — bitte die Adresse oben markieren.",
       },
-    ],
+    ] as KontaktKanal[],
     /** Ablauf in drei Schritten — bewusst ohne Zeitversprechen. */
     ablauf: [
       {
@@ -366,7 +399,7 @@ export const content = {
       "Was diese Website selbst macht: Sie ist eine reine Informationsseite. Es gibt kein Kontaktformular, keine Anmeldung, keine Analyse- oder Werbe-Tracker, keine Marketing-Cookies und keine externen Schriften oder Skripte von anderen Anbietern. Ich werte dein Verhalten auf der Seite nicht aus.",
       "Server-Logs: Damit die Seite überhaupt ausgeliefert werden kann, protokolliert der Server, auf dem sie läuft, technisch notwendige Zugriffsdaten (z. B. aufgerufene Seite, Datum und Uhrzeit, übertragene Datenmenge, IP-Adresse und Browserkennung). Diese Daten entstehen automatisch beim Aufruf jeder Website, dienen nur dem technischen Betrieb und der Sicherheit (z. B. Erkennung von Angriffen) und werden von mir nicht mit deiner Person zusammengeführt oder zu Werbezwecken ausgewertet.",
       "Kontakt per WhatsApp: Wenn du mich über den WhatsApp-Link anschreibst, läuft die Nachricht über die Server von WhatsApp (Meta Platforms). Dabei werden deine Telefonnummer, der Nachrichteninhalt und technische Daten durch Meta verarbeitet. Ich habe keinen Einfluss auf diese Verarbeitung — zusätzlich gelten die Datenschutzbestimmungen von WhatsApp (Meta). Ich sehe und speichere in WhatsApp nur das, was du mir schreibst.",
-      "Kontakt per E-Mail: Der E-Mail-Link auf dieser Seite öffnet nur das E-Mail-Programm auf deinem Gerät — die Website selbst verschickt und speichert nichts. Erst wenn du die E-Mail absendest, läuft sie über den E-Mail-Anbieter (Google/Gmail). Auch dort gelten zusätzlich die Datenschutzbestimmungen des Anbieters.",
+      "Kontakt per E-Mail: Der E-Mail-Link auf dieser Seite öffnet nur das E-Mail-Programm auf deinem Gerät — die Website selbst verschickt und speichert nichts. Erst wenn du die E-Mail absendest, läuft sie über den E-Mail-Anbieter (Google/Gmail). Auch dort gelten zusätzlich die Datenschutzbestimmungen des Anbieters. Die E-Mail-Adresse steht zusätzlich als Text auf der Seite; der kleine Knopf „Kopieren“ legt sie nur in die Zwischenablage deines Geräts — dabei werden keine Daten an mich oder an Dritte übertragen.",
       "Coaching-Daten: Wenn du Coaching bei mir buchst, brauche ich von dir Angaben, die für die Betreuung nötig sind (z. B. deine Ziele, dein Trainingsstand, Essgewohnheiten, dein Zeitplan und dein Equipment). Diese Angaben nutze ich ausschließlich, um deinen Plan zu erstellen und dich zu betreuen. Ich speichere sie nur so lange, wie die Betreuung dauert, und lösche sie danach oder auf deinen Wunsch früher. Ich gebe sie nicht an Dritte weiter — außer, du willst ausdrücklich, dass ich mit jemandem (z. B. deinem Arzt) spreche.",
       "Deine Rechte: Du kannst jederzeit Auskunft darüber verlangen, welche Daten ich zu deiner Person gespeichert habe. Du kannst außerdem die Berichtigung falscher Daten und die Löschung deiner Daten verlangen. Schreib mir dazu einfach per WhatsApp oder E-Mail an piotr.coaches@gmail.com.",
       "Hinweis: Dieser Text beschreibt die Praxis dieser Website in einfacher Sprache. Er ist keine Rechtsberatung. Wenn sich technisch etwas ändert (z. B. ein Formular, ein Newsletter oder eine Statistik-Funktion dazukommt), muss dieser Text angepasst werden — dann bitte melden.",
